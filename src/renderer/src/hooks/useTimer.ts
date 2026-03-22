@@ -106,14 +106,14 @@ export function useTimer() {
     if (timer.status === 'running') {
       intervalRef.current = setInterval(() => {
         const current = useTimerStore.getState()
-        if (current.secondsRemaining <= 1) {
+        current.tick()
+        // Re-read after tick to check wall-clock-based remaining time
+        if (useTimerStore.getState().secondsRemaining <= 0) {
           clearInterval(intervalRef.current!)
           intervalRef.current = null
           completePhase()
-        } else {
-          current.tick()
         }
-      }, 1000)
+      }, 250)
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current)
       intervalRef.current = null
